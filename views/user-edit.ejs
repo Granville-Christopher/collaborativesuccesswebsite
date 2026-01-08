@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User - Admin Panel</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">⚡</span>
+                <span>Admin Panel</span>
+            </div>
+            <div class="nav-user">
+                <a href="/dashboard" class="btn-back">← Back to Dashboard</a>
+                <span><%= admin.username %></span>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Edit User</h1>
+        </div>
+
+        <div class="edit-card">
+            <form id="userForm" onsubmit="updateUser(event)">
+                <div class="form-section">
+                    <h3>User Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value="<%= user.email %>"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tier">Subscription Tier</label>
+                            <select id="tier" name="tier" required>
+                                <option value="none" <%= user.tier === 'none' ? 'selected' : '' %>>None</option>
+                                <option value="basic" <%= user.tier === 'basic' ? 'selected' : '' %>>Basic</option>
+                                <option value="pro" <%= user.tier === 'pro' ? 'selected' : '' %>>Pro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="is_subscribed">Subscription Status</label>
+                            <select id="is_subscribed" name="is_subscribed" required>
+                                <option value="true" <%= user.is_subscribed ? 'selected' : '' %>>Active</option>
+                                <option value="false" <%= !user.is_subscribed ? 'selected' : '' %>>Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiry_date">Expiry Date</label>
+                        <input 
+                            type="date" 
+                            id="expiry_date" 
+                            name="expiry_date" 
+                            value="<%= user.expiry_date || '' %>"
+                        >
+                        <small class="form-hint">Leave empty to remove expiry date</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Device Tokens</h3>
+                    <div class="tokens-info">
+                        <div class="token-item">
+                            <strong>Expo Tokens:</strong> <%= user.expo_tokens.length %>
+                        </div>
+                        <div class="token-item">
+                            <strong>FCM Tokens:</strong> <%= user.fcm_tokens.length %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+                </div>
+
+                <div id="message" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function updateUser(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = 'message';
+            messageDiv.textContent = 'Updating...';
+            messageDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch(`/user/<%= user._id %>/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    messageDiv.className = 'message message-success';
+                    messageDiv.textContent = '✅ User updated successfully!';
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    messageDiv.className = 'message message-error';
+                    messageDiv.textContent = '❌ ' + result.message;
+                }
+            } catch (error) {
+                messageDiv.className = 'message message-error';
+                messageDiv.textContent = '❌ Error updating user';
+            }
+        }
+    </script>
+</body>
+</html>
+

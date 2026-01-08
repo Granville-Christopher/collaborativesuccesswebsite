@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Discord Server Monitor</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .download-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #5865F2 0%, #3C45A5 100%);
+            border-radius: 24px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 8px 16px rgba(88, 101, 242, 0.3);
+        }
+        .app-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #111827;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .app-version {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 30px;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #5865F2 0%, #3C45A5 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+        }
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        .features {
+            margin: 40px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+        .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .feature-text {
+            flex: 1;
+            color: #374151;
+        }
+        .instructions {
+            background: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #92400E;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+            color: #78350F;
+        }
+        .github-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #E5E7EB;
+        }
+        .github-link a {
+            color: #5865F2;
+            text-decoration: none;
+        }
+        .github-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <div class="app-icon">📱</div>
+        <h1 class="app-name">Discord Server Monitor</h1>
+        <p class="app-version">Version <%= version %> • Released <%= releaseDate %></p>
+        
+        <a href="/download/apk" class="download-btn" download>
+            📥 Download APK (Android)
+        </a>
+        
+        <div class="features">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #111827;">Features</h2>
+            <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span class="feature-text">Real-time Discord server monitoring</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🔔</span>
+                <span class="feature-text">Instant push notifications</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span class="feature-text">Live feed of all server activity</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🔗</span>
+                <span class="feature-text">Link multiple Discord accounts</span>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Installation Instructions</h3>
+            <ol>
+                <li>Download the APK file using the button above</li>
+                <li>On your Android device, go to <strong>Settings → Security</strong></li>
+                <li>Enable <strong>"Install from Unknown Sources"</strong> or <strong>"Install Unknown Apps"</strong></li>
+                <li>Open the downloaded APK file</li>
+                <li>Tap <strong>"Install"</strong> when prompted</li>
+                <li>Open the app and sign up or log in</li>
+            </ol>
+            <p style="margin-top: 15px; color: #92400E;"><strong>Note:</strong> This app is not available on Google Play Store. You need to enable installation from unknown sources to install it.</p>
+        </div>
+        
+        <div class="github-link">
+            <p>Also available on <a href="https://github.com/Granville-Christopher/collaborativeminds/releases" target="_blank">GitHub Releases</a></p>
+        </div>
+    </div>
+</body>
+</html>
+

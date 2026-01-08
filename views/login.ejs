@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Discord Server Monitor</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-circle">
+                    <span class="logo-text">A</span>
+                </div>
+                <h1>Admin Panel</h1>
+                <p>Discord Server Monitor</p>
+            </div>
+            
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+            
+            <form method="POST" action="/login" class="login-form">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        required 
+                        autofocus
+                        placeholder="+1234567890"
+                        pattern="[+]?[0-9]{10,15}"
+                    >
+                    <small class="form-hint">Enter your registered phone number</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        placeholder="Enter password"
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    Login
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Don't have an account? <a href="/register" style="color: var(--primary); font-weight: 600;">Register</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

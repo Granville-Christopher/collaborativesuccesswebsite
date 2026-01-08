@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Discord Server Monitor</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">⚡</span>
+                <span>Admin Panel</span>
+            </div>
+            <div class="nav-user">
+                <span><%= admin.username %></span>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Users Dashboard</h1>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by email...">
+                <button onclick="searchUsers()">Search</button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.total %></div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+            </div>
+            <div class="stat-card stat-success">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.subscribed %></div>
+                    <div class="stat-label">Subscribed</div>
+                </div>
+            </div>
+            <div class="stat-card stat-info">
+                <div class="stat-icon">💎</div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.pro %></div>
+                    <div class="stat-label">Pro Users</div>
+                </div>
+            </div>
+            <div class="stat-card stat-warning">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.basic %></div>
+                    <div class="stat-label">Basic Users</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Tier</th>
+                        <th>Status</th>
+                        <th>Expiry Date</th>
+                        <th>Tokens</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.email %></td>
+                            <td>
+                                <span class="badge badge-<%= user.tier === 'pro' ? 'pro' : user.tier === 'basic' ? 'basic' : 'none' %>">
+                                    <%= user.tier.toUpperCase() %>
+                                </span>
+                            </td>
+                            <td>
+                                <% if (user.is_subscribed) { %>
+                                    <span class="badge badge-success">Active</span>
+                                <% } else { %>
+                                    <span class="badge badge-danger">Inactive</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (user.expiry_date) { %>
+                                    <%= new Date(user.expiry_date).toLocaleDateString() %>
+                                <% } else { %>
+                                    <span class="text-muted">No expiry</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <span class="token-count">
+                                    📱 <%= user.expo_tokens %> | 🔔 <%= user.fcm_tokens %>
+                                </span>
+                            </td>
+                            <td>
+                                <% if (user.created_at) { %>
+                                    <%= new Date(user.created_at).toLocaleDateString() %>
+                                <% } else { %>
+                                    <span class="text-muted">N/A</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <a href="/user/<%= user._id %>" class="btn btn-sm btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function searchUsers() {
+            const search = document.getElementById('searchInput').value;
+            if (search) {
+                window.location.href = `/dashboard?search=${encodeURIComponent(search)}`;
+            } else {
+                window.location.href = '/dashboard';
+            }
+        }
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchUsers();
+            }
+        });
+    </script>
+</body>
+</html>
+
