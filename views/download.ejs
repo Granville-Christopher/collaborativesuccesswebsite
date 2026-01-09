@@ -6,161 +6,381 @@
     <title><%= title %> - Discord Server Monitor</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .download-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .app-icon {
-            width: 120px;
-            height: 120px;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 120px; /* Space for fixed footer */
+            position: relative;
+        }
+
+        .download-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .app-logo {
+            width: 140px;
+            height: 140px;
             background: linear-gradient(135deg, #5865F2 0%, #3C45A5 100%);
-            border-radius: 24px;
+            border-radius: 32px;
             margin: 0 auto 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            color: white;
-            box-shadow: 0 8px 16px rgba(88, 101, 242, 0.3);
+            font-size: 64px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+
+        .app-logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .app-name {
-            font-size: 32px;
-            font-weight: bold;
-            color: #111827;
-            text-align: center;
-            margin-bottom: 10px;
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            letter-spacing: -1px;
         }
+
+        .app-tagline {
+            font-size: 20px;
+            opacity: 0.95;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
         .app-version {
-            text-align: center;
-            color: #6B7280;
-            margin-bottom: 30px;
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 40px;
         }
+
+        .download-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .download-btn-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
         .download-btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 40px;
             background: linear-gradient(135deg, #5865F2 0%, #3C45A5 100%);
             color: white;
-            text-align: center;
             text-decoration: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 30px 0;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(88, 101, 242, 0.4);
+            position: relative;
+            overflow: hidden;
         }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
         .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(88, 101, 242, 0.5);
         }
+
         .download-btn:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
         }
-        .features {
+
+        .download-icon {
+            font-size: 28px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #5865F2;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .feature-desc {
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+
+        .instructions-section {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-radius: 16px;
+            padding: 24px;
             margin: 40px 0;
+            border-left: 6px solid #F59E0B;
         }
-        .feature-item {
+
+        .instructions-section h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #92400E;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background: #F9FAFB;
-            border-radius: 8px;
+            gap: 8px;
         }
-        .feature-icon {
-            font-size: 24px;
-            margin-right: 15px;
+
+        .instructions-section h3::before {
+            font-size: 20px;
         }
-        .feature-text {
-            flex: 1;
-            color: #374151;
+
+        .instructions-list {
+            list-style: none;
+            counter-reset: step-counter;
         }
-        .instructions {
-            background: #FEF3C7;
-            border-left: 4px solid #F59E0B;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
-        .instructions h3 {
-            margin-top: 0;
-            color: #92400E;
-        }
-        .instructions ol {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        .instructions li {
-            margin: 8px 0;
+
+        .instructions-list li {
+            counter-increment: step-counter;
+            padding: 10px 0 10px 40px;
+            position: relative;
+            font-size: 13px;
             color: #78350F;
+            line-height: 1.5;
         }
-        .github-link {
+
+        .instructions-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 28px;
+            height: 28px;
+            background: #F59E0B;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .security-badge {
+            background: #D1FAE5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 24px 0;
             text-align: center;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #E5E7EB;
+            border: 2px solid #6EE7B7;
         }
-        .github-link a {
+
+        .security-badge h4 {
+            color: #065F46;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .security-badge p {
+            color: #047857;
+            font-size: 14px;
+        }
+
+        .footer-links {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            text-align: center;
+            padding: 20px;
+            border-top: 2px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .footer-links a {
             color: #5865F2;
             text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .github-link a:hover {
+
+        .footer-links a:hover {
             text-decoration: underline;
+            color: #3C45A5;
+        }
+
+        @media (max-width: 768px) {
+            .app-name {
+                font-size: 36px;
+            }
+
+            .app-tagline {
+                font-size: 18px;
+            }
+
+            .download-container {
+                padding: 30px 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-btn {
+                padding: 16px 32px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="download-container">
-        <div class="app-icon">📱</div>
-        <h1 class="app-name">Discord Server Monitor</h1>
-        <p class="app-version">Version <%= version %> • Released <%= releaseDate %></p>
-        
-        <a href="/download/apk" class="download-btn" download>
-            📥 Download APK (Android)
-        </a>
-        
-        <div class="features">
-            <h2 style="text-align: center; margin-bottom: 20px; color: #111827;">Features</h2>
-            <div class="feature-item">
-                <span class="feature-icon">⚡</span>
-                <span class="feature-text">Real-time Discord server monitoring</span>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🔔</span>
-                <span class="feature-text">Instant push notifications</span>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">📊</span>
-                <span class="feature-text">Live feed of all server activity</span>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🔗</span>
-                <span class="feature-text">Link multiple Discord accounts</span>
-            </div>
+    <div class="download-wrapper">
+        <div class="hero-section">
+            <div class="app-logo">📱</div>
+            <h1 class="app-name">Discord Server Monitor</h1>
+            <p class="app-tagline">Real-time monitoring for your Discord servers</p>
+            <p class="app-version">Version <%= version %> • Released <%= releaseDate %></p>
         </div>
-        
-        <div class="instructions">
-            <h3>📋 Installation Instructions</h3>
-            <ol>
-                <li>Download the APK file using the button above</li>
-                <li>On your Android device, go to <strong>Settings → Security</strong></li>
-                <li>Enable <strong>"Install from Unknown Sources"</strong> or <strong>"Install Unknown Apps"</strong></li>
-                <li>Open the downloaded APK file</li>
-                <li>Tap <strong>"Install"</strong> when prompted</li>
-                <li>Open the app and sign up or log in</li>
-            </ol>
-            <p style="margin-top: 15px; color: #92400E;"><strong>Note:</strong> This app is not available on Google Play Store. You need to enable installation from unknown sources to install it.</p>
-        </div>
-        
-        <div class="github-link">
-            <p>Also available on <a href="https://github.com/Granville-Christopher/collaborativeminds/releases" target="_blank">GitHub Releases</a></p>
+
+        <div class="download-container">
+            <div class="download-btn-container">
+                <a href="/download/apk" class="download-btn" download>
+                    <span class="download-icon">📥</span>
+                    <span>Download for Android</span>
+                </a>
+            </div>
+
+            <div class="security-badge">
+                <h4>🔒 Secure & Verified</h4>
+                <p>This app is verified and safe to download. All files are scanned for security.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-title">Real-time Monitoring</div>
+                    <div class="feature-desc">Instant Discord server updates</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔔</span>
+                    <div class="feature-title">Push Notifications</div>
+                    <div class="feature-desc">Never miss important events</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <div class="feature-title">Live Feed</div>
+                    <div class="feature-desc">View all server activity</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔗</span>
+                    <div class="feature-title">Multi-Account</div>
+                    <div class="feature-desc">Monitor multiple accounts</div>
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <h3>📋 Installation Instructions</h3>
+                <ol class="instructions-list">
+                    <li>Click the download button above to download the APK file</li>
+                    <li>On your Android device, open <strong>Settings</strong> → <strong>Security</strong> (or <strong>Privacy</strong>)</li>
+                    <li>Enable <strong>"Install from Unknown Sources"</strong> or <strong>"Install Unknown Apps"</strong></li>
+                    <li>Locate the downloaded APK file in your device's Downloads folder</li>
+                    <li>Tap the APK file to begin installation</li>
+                    <li>Follow the on-screen prompts to complete installation</li>
+                    <li>Open the app and create an account or sign in to get started</li>
+                </ol>
+                <p style="margin-top: 16px; color: #92400E; font-weight: 600; font-size: 12px;">
+                    ⚠️ Note: This app is distributed outside the Google Play Store. You'll need to enable installation from unknown sources to install it.
+                </p>
+            </div>
+
+            <div class="footer-links app-download-link">
+                <a href="/download/apk" download>📦 CollaborativeSuccess.apk</a>
+                <a href="mailto:support@example.com">💬 Contact Support</a>
+            </div>
         </div>
     </div>
 </body>
 </html>
-

@@ -16,8 +16,16 @@ const downloadRoutes = require('./routes/downloadRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB (will be called, but don't block server startup)
+let dbConnected = false;
+connectDB()
+  .then(() => {
+    dbConnected = true;
+  })
+  .catch((error) => {
+    console.error('❌ Failed to connect to MongoDB:', error.message);
+    console.log('⚠️  Server will continue but database operations may fail');
+  });
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -67,9 +75,32 @@ app.use((req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Admin Panel running on http://localhost:${PORT}`);
-  console.log(`📱 Register at: http://localhost:${PORT}/register`);
   console.log(`🔐 Login at: http://localhost:${PORT}/login`);
+  
+  // Check admin count after a short delay to ensure DB is connected
+  setTimeout(async () => {
+    try {
+      const mongoose = require('mongoose');
+      // Wait for connection to be ready
+      if (mongoose.connection.readyState === 1) {
+        const Admin = require('./models/Admin');
+        const adminCount = await Admin.countDocuments();
+        if (adminCount === 0) {
+          console.log(`📱 Register at: http://localhost:${PORT}/register (First-time setup)`);
+          console.log(`⚠️  No admin account found. Please register to create the first admin.`);
+        } else {
+          console.log(`✅ Admin account exists. Registration is disabled.`);
+        }
+      } else {
+        console.log(`⚠️  Database not connected yet. Admin check will happen on first request.`);
+      }
+    } catch (error) {
+      console.error('❌ Error checking admin count:', error.message);
+    }
+  }, 2000); // Wait 2 seconds for DB connection
+  
   console.log(`\n📋 Database: CollaborativeSuccess`);
-  console.log(`📦 Collections: app_users, discord_links, expert_moves, payments`);
+  console.log(`📦 Collections: app_users, discord_links, expert_moves, payments, admins`);
   console.log(`\n💡 Connection string from: MONGO_URI in .env file`);
+  console.log(`\n🔒 Security: Only ONE admin account is allowed.`);
 });

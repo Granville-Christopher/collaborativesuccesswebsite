@@ -1,0 +1,41 @@
+# Dependencies (installed on Railway)
+node_modules/
+
+# Large files that shouldn't be deployed
+public/downloads/*.apk
+public/downloads/*.aab
+
+# Environment files (use Railway variables instead)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+README.md
+CONNECTION_INFO.md
+
+# Temporary files
+*.tmp
+*.temp
+

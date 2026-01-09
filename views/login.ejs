@@ -55,7 +55,9 @@
             </form>
             
             <div class="login-footer">
-                <p>Don't have an account? <a href="/register" style="color: var(--primary); font-weight: 600;">Register</a></p>
+                <% if (typeof showRegister !== 'undefined' && showRegister) { %>
+                    <p>Don't have an account? <a href="/register" style="color: var(--primary); font-weight: 600;">Register</a></p>
+                <% } %>
             </div>
         </div>
     </div>

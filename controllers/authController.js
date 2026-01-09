@@ -4,8 +4,22 @@ const { hashPassword, verifyPassword } = require('../utils/password');
 /**
  * Render login page
  */
-const getLogin = (req, res) => {
-  res.render('login', { error: null });
+const getLogin = async (req, res) => {
+  try {
+    // Check if admin exists to hide register link
+    const adminCount = await Admin.countDocuments();
+    res.render('login', { 
+      error: req.query.error || null,
+      showRegister: adminCount === 0 // Only show register if no admin exists
+    });
+  } catch (error) {
+    console.error('Error checking admin count:', error);
+    // If database error, show register link (safer default)
+    res.render('login', { 
+      error: req.query.error || null,
+      showRegister: true
+    });
+  }
 };
 
 /**
@@ -56,17 +70,37 @@ const postLogin = async (req, res) => {
 };
 
 /**
- * Render register page
+ * Render register page - DISABLED: Only one admin allowed
  */
-const getRegister = (req, res) => {
-  res.render('register', { error: null });
+const getRegister = async (req, res) => {
+  try {
+    // Check if admin already exists
+    const count = await Admin.countDocuments();
+    if (count > 0) {
+      return res.render('error', { 
+        error: 'Admin registration is disabled. An admin account already exists. Please contact the system administrator.' 
+      });
+    }
+    res.render('register', { error: null });
+  } catch (err) {
+    console.error('Error checking admin count:', err);
+    res.render('error', { error: 'Unable to check admin status. Please try again later.' });
+  }
 };
 
 /**
- * Handle registration
+ * Handle registration - Only allows one admin
  */
 const postRegister = async (req, res) => {
   try {
+    // FIRST CHECK: Only allow registration if no admin exists
+    const adminCount = await Admin.countDocuments();
+    if (adminCount > 0) {
+      return res.render('register', { 
+        error: 'Admin registration is disabled. An admin account already exists. Only one admin is allowed.' 
+      });
+    }
+    
     const { phone, password, confirmPassword, email } = req.body;
     
     // Validation
@@ -82,7 +116,7 @@ const postRegister = async (req, res) => {
       return res.render('register', { error: 'Passwords do not match' });
     }
     
-    // Check if admin already exists
+    // Double-check if admin already exists (race condition protection)
     const existingAdmin = await Admin.findOne({ phone: phone.trim() });
     if (existingAdmin) {
       return res.render('register', { error: 'Phone number already registered' });
@@ -91,7 +125,7 @@ const postRegister = async (req, res) => {
     // Hash password with both bcrypt and argon2
     const { bcrypt: bcryptHash, argon2: argon2Hash } = await hashPassword(password);
     
-    // Create admin
+    // Create admin (only one allowed)
     const admin = await Admin.create({
       phone: phone.trim(),
       password: 'hashed', // Legacy field (not used, but kept for compatibility)
@@ -101,7 +135,7 @@ const postRegister = async (req, res) => {
       created_at: new Date()
     });
     
-    console.log(`✅ New admin registered: ${admin.phone}`);
+    console.log(`✅ Admin account created: ${admin.phone} (ONLY ADMIN ALLOWED)`);
     
     // Auto-login after registration
     req.session.admin = {

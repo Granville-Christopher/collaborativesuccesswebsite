@@ -300,6 +300,14 @@ body {
     background: rgba(88, 101, 242, 0.1);
 }
 
+.stat-info {
+    flex: 1;
+}
+
+.stat-card.stat-info .stat-icon {
+    background: rgba(59, 130, 246, 0.1);
+}
+
 .stat-warning .stat-icon {
     background: rgba(245, 158, 11, 0.1);
 }
