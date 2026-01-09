@@ -3,3 +3,7 @@ node_modules/
 *.log
 .DS_Store
 
+# APK files - using Expo direct links instead
+public/downloads/*.apk
+*.apk
+

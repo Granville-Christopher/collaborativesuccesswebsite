@@ -1,5 +1,4 @@
 const AppUser = require('../models/AppUser');
-const Download = require('../models/Download');
 
 /**
  * Get dashboard with users and stats
@@ -24,8 +23,7 @@ const getDashboard = async (req, res) => {
       subscribed: await AppUser.countDocuments({ is_subscribed: true }),
       basic: await AppUser.countDocuments({ tier: 'basic' }),
       pro: await AppUser.countDocuments({ tier: 'pro' }),
-      none: await AppUser.countDocuments({ tier: 'none' }),
-      downloads: await Download.countDocuments({})
+      none: await AppUser.countDocuments({ tier: 'none' })
     };
     
     res.render('dashboard', {

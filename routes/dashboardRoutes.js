@@ -9,7 +9,6 @@ router.get('/dashboard', requireAuth, dashboardController.getDashboard);
 
 // API endpoints
 router.get('/api/users', requireAuth, dashboardController.getUsersAPI);
-router.get('/api/analytics/downloads', requireAuth, analyticsController.getDownloadStats);
 router.get('/api/analytics/user-growth', requireAuth, analyticsController.getUserGrowthStats);
 router.get('/api/analytics/tier-distribution', requireAuth, analyticsController.getTierDistribution);
 router.get('/api/analytics/revenue', requireAuth, analyticsController.getRevenueStats);

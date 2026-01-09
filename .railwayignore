@@ -1,7 +1,9 @@
 # Dependencies (installed on Railway)
 node_modules/
 
-# Large files that shouldn't be deployed
+# Large files that shouldn't be deployed via railway up (causes timeout)
+# APK files should be uploaded separately via Railway dashboard/volumes
+# or use external storage (S3, Cloudflare R2, etc.)
 public/downloads/*.apk
 public/downloads/*.aab
 

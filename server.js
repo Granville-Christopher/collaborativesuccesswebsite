@@ -30,7 +30,6 @@ connectDB()
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Session configuration
 app.use(session({
@@ -47,19 +46,39 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Routes
+// Routes (define before static files to avoid conflicts)
 app.get('/', (req, res) => {
-  if (req.session.admin) {
-    res.redirect('/dashboard');
-  } else {
-    res.redirect('/login');
-  }
+  res.redirect('/download');
 });
 
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', userRoutes);
 app.use('/', downloadRoutes);
+
+// Static files (after routes to avoid conflicts)
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
+
+// Debug route to check if static files are being served
+app.get('/debug/files', (req, res) => {
+  const fs = require('fs');
+  const downloadsPath = path.join(publicPath, 'downloads');
+  try {
+    const files = fs.readdirSync(downloadsPath);
+    res.json({
+      publicPath: publicPath,
+      downloadsPath: downloadsPath,
+      files: files,
+      fileExists: {
+        'collaborativesuccess.apk': fs.existsSync(path.join(downloadsPath, 'collaborativesuccess.apk')),
+        'app-release.apk': fs.existsSync(path.join(downloadsPath, 'app-release.apk'))
+      }
+    });
+  } catch (err) {
+    res.json({ error: err.message, publicPath, downloadsPath });
+  }
+});
 
 // Error handler
 app.use((err, req, res, next) => {

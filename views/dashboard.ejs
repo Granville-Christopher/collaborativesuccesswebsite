@@ -38,7 +38,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 40px;
+            height: 30px;
         }
 
         .nav-brand {
@@ -764,16 +764,6 @@
 
                 <div class="sidebar-stat-item">
                     <div class="sidebar-stat-header">
-                        <div class="sidebar-stat-icon">📥</div>
-                        <div>
-                            <div class="sidebar-stat-label">Downloads</div>
-                            <div class="sidebar-stat-value" id="sidebarDownloads">-</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sidebar-stat-item">
-                    <div class="sidebar-stat-header">
                         <div class="sidebar-stat-icon">⏰</div>
                         <div>
                             <div class="sidebar-stat-label">Expired Subs</div>
@@ -1074,18 +1064,6 @@
             }
         }
 
-        // Load download stats - only update sidebar
-        async function loadDownloadStats() {
-            try {
-                const res = await fetch('/api/analytics/downloads');
-                const data = await res.json();
-                const downloads = data.total || 0;
-                document.getElementById('sidebarDownloads').textContent = downloads;
-            } catch (error) {
-                console.error('Error loading download stats:', error);
-            }
-        }
-
         // Load revenue stats - only update sidebar
         async function loadRevenueStats() {
             try {
@@ -1303,7 +1281,6 @@
 
         // Load all data on page load
         loadDashboardStats();
-        loadDownloadStats();
         loadRevenueStats();
         loadExpiredStats();
         loadLinkedAccountsStats();

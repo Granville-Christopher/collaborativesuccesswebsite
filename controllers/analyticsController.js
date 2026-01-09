@@ -1,32 +1,5 @@
 const AppUser = require('../models/AppUser');
-const Download = require('../models/Download');
 const mongoose = require('mongoose');
-
-/**
- * Get download statistics
- */
-const getDownloadStats = async (req, res) => {
-  try {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekAgo = new Date(today);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const monthAgo = new Date(today);
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
-
-    const stats = {
-      total: await Download.countDocuments({}),
-      today: await Download.countDocuments({ downloaded_at: { $gte: today } }),
-      week: await Download.countDocuments({ downloaded_at: { $gte: weekAgo } }),
-      month: await Download.countDocuments({ downloaded_at: { $gte: monthAgo } })
-    };
-
-    res.json(stats);
-  } catch (error) {
-    console.error('Download stats error:', error);
-    res.status(500).json({ error: 'Failed to fetch download stats' });
-  }
-};
 
 /**
  * Get user growth statistics (daily, weekly, monthly)
@@ -370,7 +343,6 @@ const getRevenueChart = async (req, res) => {
 };
 
 module.exports = {
-  getDownloadStats,
   getUserGrowthStats,
   getTierDistribution,
   getRevenueStats,

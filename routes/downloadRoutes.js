@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const Download = require('../models/Download');
 
 // Download page (public, no auth required)
 router.get('/download', (req, res) => {
@@ -14,6 +13,8 @@ router.get('/download', (req, res) => {
 
 // Direct APK download endpoint - Track downloads
 router.get('/download/apk', async (req, res) => {
+  const fs = require('fs');
+  
   // Try multiple possible APK filenames (check collaborativesuccess.apk first since it exists)
   const possiblePaths = [
     path.join(__dirname, '../public/downloads/collaborativesuccess.apk'),
@@ -22,39 +23,63 @@ router.get('/download/apk', async (req, res) => {
   ];
   
   let apkPath = null;
-  const fs = require('fs');
+  
+  // Log current directory for debugging
+  console.log('Current __dirname:', __dirname);
+  console.log('Checking for APK files...');
   
   // Find which APK file exists
   for (const possiblePath of possiblePaths) {
-    if (fs.existsSync(possiblePath)) {
-      apkPath = possiblePath;
-      break;
+    try {
+      const exists = fs.existsSync(possiblePath);
+      console.log(`Checking: ${possiblePath} - ${exists ? 'EXISTS' : 'NOT FOUND'}`);
+      if (exists) {
+        apkPath = possiblePath;
+        console.log(`✅ Found APK at: ${apkPath}`);
+        // Check file size
+        const stats = fs.statSync(apkPath);
+        console.log(`File size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+        break;
+      }
+    } catch (error) {
+      console.error(`Error checking path ${possiblePath}:`, error.message);
     }
   }
   
   if (!apkPath) {
-    return res.status(404).render('error', { error: 'APK file not found. Please contact support.' });
+    console.error('❌ APK file not found. Checked paths:', possiblePaths);
+    // List files in downloads directory for debugging
+    let filesList = 'No files found';
+    try {
+      const downloadsDir = path.join(__dirname, '../public/downloads');
+      const files = fs.readdirSync(downloadsDir);
+      filesList = files.join(', ');
+      console.log('Files in downloads directory:', files);
+    } catch (err) {
+      console.error('Error reading downloads directory:', err.message);
+      filesList = `Error: ${err.message}`;
+    }
+    
+    // Fallback to Expo direct link if file not found on server
+    const expoDirectLink = 'https://expo.dev/artifacts/eas/v36BvoUzhrV38HhYjDzNXs.apk';
+    console.log('⚠️ APK not found on server, redirecting to Expo direct link');
+    return res.redirect(expoDirectLink);
   }
   
-  // Track download
-  try {
-    await Download.create({
-      ip_address: req.ip || req.connection.remoteAddress,
-      user_agent: req.get('user-agent') || 'Unknown',
-      referer: req.get('referer') || 'Direct',
-      downloaded_at: new Date()
-    });
-  } catch (error) {
-    console.error('Error tracking download:', error);
-    // Don't fail the download if tracking fails
-  }
+  // Set proper headers for file download
+  res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+  res.setHeader('Content-Disposition', 'attachment; filename="DiscordServerMonitor-v1.0.0.apk"');
   
-  res.download(apkPath, 'DiscordServerMonitor-v1.0.0.apk', (err) => {
-    if (err) {
-      console.error('Error downloading APK:', err);
+  // Send the file
+  const fileStream = fs.createReadStream(apkPath);
+  fileStream.on('error', (err) => {
+    console.error('Error reading APK file:', err);
+    if (!res.headersSent) {
       res.status(404).render('error', { error: 'APK file not found. Please contact support.' });
     }
   });
+  
+  fileStream.pipe(res);
 });
 
 module.exports = router;
