@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
+// Ad page (public, no auth required)
+router.get('/ad', (req, res) => {
+  res.render('ad');
+});
+
 // Download page (public, no auth required)
 router.get('/download', (req, res) => {
   res.render('download', {

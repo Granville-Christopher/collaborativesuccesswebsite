@@ -1,0 +1,34 @@
+Subject: 🚀 App Update Available - New Features Await!
+
+═══════════════════════════════════════════════════════════════════
+
+App Update Available!
+
+═══════════════════════════════════════════════════════════════════
+
+Hello,
+
+We're excited to announce that a new version of CollaborativeSuccess is now available with exciting new features and improvements!
+
+✨ What's New:
+- Enhanced user experience with improved interface
+- New features and functionality
+- Performance improvements and bug fixes
+- Better security and stability
+
+Please update your app to the latest version to access these new features.
+
+📥 Download the updated app here:
+https://expo.dev/artifacts/eas/4N9F7T1pNhTFRDCapePkPK.apk
+
+⚠️ Important: Make sure to download and install the new version to continue enjoying all features. The previous version may stop receiving updates.
+
+Thank you for being part of CollaborativeSuccess!
+
+Best regards,
+The CollaborativeSuccess Team
+
+───────────────────────────────────────────────────────────────────
+This is an automated message. Please do not reply to this email.
+If you have any questions, please contact our support team.
+

@@ -6,6 +6,8 @@ require('dotenv').config();
 
 // Import database connection
 const connectDB = require('./config/database');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -27,24 +29,69 @@ connectDB()
     console.log('⚠️  Server will continue but database operations may fail');
   });
 
+// Trust proxy for Railway (needed for HTTPS detection)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Session configuration
+// Session configuration with MongoDB store (production-ready)
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT === 'production';
+
+// Create MongoDB session store with error handling (connect-mongo v4 API)
+let sessionStore = undefined;
+if (mongoUri) {
+  try {
+    sessionStore = new MongoStore({
+      mongoUrl: mongoUri,
+      dbName: 'CollaborativeSuccess',
+      collectionName: 'sessions',
+      ttl: 24 * 60 * 60, // 24 hours in seconds
+      autoRemove: 'native', // Use native MongoDB TTL index
+      touchAfter: 24 * 3600 // Only update session once per day
+    });
+    console.log('✅ MongoDB session store initialized');
+  } catch (error) {
+    console.error('❌ Failed to create MongoDB session store:', error.message);
+    console.warn('⚠️  Falling back to MemoryStore (not recommended for production)');
+    sessionStore = undefined;
+  }
+} else {
+  console.warn('⚠️  WARNING: No MONGO_URI found. Using MemoryStore for sessions.');
+  if (isProduction) {
+    console.warn('⚠️  MemoryStore is NOT recommended for production. Please set MONGO_URI environment variable.');
+  }
+}
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
   resave: false,
   saveUninitialized: false,
+  store: sessionStore, // Will be undefined if MongoDB store creation failed, falling back to MemoryStore
   cookie: { 
-    secure: false, // Set to true if using HTTPS
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    secure: isProduction, // Use secure cookies in production (Railway provides HTTPS)
+    httpOnly: true, // Prevent XSS attacks
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax' // CSRF protection
   }
 }));
 
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    database: dbStatus,
+    uptime: process.uptime()
+  });
+});
 
 // Routes (define before static files to avoid conflicts)
 app.get('/', (req, res) => {
@@ -99,7 +146,6 @@ app.listen(PORT, () => {
   // Check admin count after a short delay to ensure DB is connected
   setTimeout(async () => {
     try {
-      const mongoose = require('mongoose');
       // Wait for connection to be ready
       if (mongoose.connection.readyState === 1) {
         const Admin = require('./models/Admin');
